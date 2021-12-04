@@ -1,2 +1,3 @@
-# bmo
+# BMO
+
 BMO (Be More) Shell
