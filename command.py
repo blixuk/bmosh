@@ -57,5 +57,5 @@ class Command:
 		except SystemExit:
 			pass
 
-	def printHelp(self):
+	def print_help(self):
 		self.parser.print_help()
