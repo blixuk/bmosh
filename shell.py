@@ -30,7 +30,7 @@ class Shell:
 
 	def main_loop(self, count:int, line:str) -> any:
 		try:
-			line = self.command.pyex(line)(line, Session().session)
+			line = self.command._pyex(line)(line, Session().session)
 		except NameError:
 			Log().error('NameError', line)
 		if line is not None:

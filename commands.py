@@ -1,5 +1,6 @@
 # file: lemonpy/commands.py
 
+import re
 import types
 
 import style
@@ -123,15 +124,36 @@ defualt:
 	
 	def pyin(self, args:list) -> None:
 		try:
-			print(dir(str(args[0])))
+			args = " ".join(args)
+			print(dir(args))
 			return None
 		except Exception as ex:
 			Log().error("pyin", ex)
 
-	def pyex(self, args:list) -> any:
-		line = "".join(args)
+	def pyhelp(self, args:list) -> None:
 		try:
-			compile(line, '<stdin>', 'eval') # compile python with eval
+			if len(args) == 0:
+				help()
+			else:
+				args = " ".join(args)
+				print(help(args))
+				return None
+		except Exception as ex:
+			Log().error("pyin", ex)
+
+	def pyex(self, args:list) -> None:
+		try:
+			args = " ".join(args)
+			compile(args, '<stdin>', 'eval') # compile python with eval
+		except SyntaxError: # if syntax error: either can't eval or not python syntax
+			print(exec(args, Session().session)) # try exec python statement
+			return None
+		print(eval(args, Session().session)) # eval python expression
+		return None
+
+	def _pyex(self, args:list) -> any:
+		try:
+			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
 		except SyntaxError: # if syntax error: either can't eval or not python syntax
 			return exec # try exec python statement
 		return eval # eval python expression
