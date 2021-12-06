@@ -29,7 +29,10 @@ class Shell:
 		return count, line
 
 	def main_loop(self, count:int, line:str) -> any:
-		line = self.command.pyex(line)(line, Session().session)
+		try:
+			line = self.command.pyex(line)(line, Session().session)
+		except NameError:
+			Log().error('NameError', line)
 		if line is not None:
 			self.post_loop(count, line)
 		return count, line
@@ -38,5 +41,5 @@ class Shell:
 		if line is not None:
 			print(line)
 		else:
-			Log().log(line)
+			Log().log("Loop", line)
 		return count, line
