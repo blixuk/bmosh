@@ -1,16 +1,15 @@
 # file: bmo/session.py
 
 import shelve
-import os
 
 import style
 from logging import Log
+from directory import Directory
 
 class Session:
 
 	session = {}
-	home = os.path.expanduser("~")
-	session_path = f"{home}/.config/bmo/sessions"
+	session_path = Directory().get_directory("session")
 
 	def __init__(self) -> None:
 		pass
