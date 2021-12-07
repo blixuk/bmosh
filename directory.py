@@ -27,6 +27,7 @@ class Directory:
 		'sessions' : Path('~/.config/bmo/sessions').expanduser(),
 		'aliases' : Path('~/.config/bmo/aliases.bmo').expanduser(),
 		'history' : Path('~/.config/bmo/history.bmo').expanduser(),
+		'config' : Path('~/.config/bmo/config.bmo').expanduser(),
 	}
 	stack = [Path("/")]
 	path = Path("/")
@@ -42,6 +43,12 @@ class Directory:
 
 	def get_path(self) -> str:
 		return str(Directory.path)
+
+	def get_directory(self, name:str) -> str:
+		if name in Directory.directories:
+			return Directory.directories[name]
+		else:
+			return None
 
 	def change_directory(self, path:str) -> None:
 		if path in Directory.directories:
