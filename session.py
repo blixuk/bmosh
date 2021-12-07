@@ -1,6 +1,7 @@
 # file: bmo/session.py
 
 import shelve
+import os
 
 import style
 from logging import Log
