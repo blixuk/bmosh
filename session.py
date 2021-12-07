@@ -10,7 +10,7 @@ from directory import Directory
 class Session:
 
 	session = {}
-	session_path = Directory().get_directory("session")
+	session_path = Directory().get_directory("sessions")
 
 	def __init__(self) -> None:
 		pass

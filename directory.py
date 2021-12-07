@@ -46,7 +46,7 @@ class Directory:
 
 	def get_directory(self, name:str) -> str:
 		if name in Directory.directories:
-			return Directory.directories[name]
+			return str(Directory.directories[name])
 		else:
 			return None
 
