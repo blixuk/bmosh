@@ -1,6 +1,5 @@
 # file: lemonpy/commands.py
 
-import re
 import types
 
 import style
@@ -26,6 +25,9 @@ class Commands:
 		"dx" : ["directory", "drop"],
 		"da" : ["directory", "add"],
 		"dr" : ["directory", "remove"],
+		"pe" : ["pyex"],
+		"pi" : ["pyin"],
+		"ph" : ["pyhelp"],
 	}
 
 	def __init__(self) -> None:
