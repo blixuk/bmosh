@@ -1,7 +1,7 @@
 # file: bmo/__main__.py
 
-from command import Command
-cmd = Command(description="BMO")
+from args import Args
+args = Args(description="BMO")
 from shell import Shell
 shell = Shell()
 
@@ -10,13 +10,13 @@ class BMO:
 	def __init__(self):
 		pass
 
-	@cmd.subcommand()
+	@args.subcommand()
 	def run(self, args):
 		shell.loop()
 
-	@cmd.subcommand()
+	@args.subcommand()
 	def help(self, args):
-		cmd.print_help()
+		args.print_help()
 
 if __name__ == '__main__':
-	cmd.parse()
+	args.parse()
