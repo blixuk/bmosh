@@ -4,9 +4,9 @@ import types
 
 import style
 from logging import Log
-
 from directory import Directory
 from session import Session
+from config import Config
 
 class Commands:
 
@@ -108,11 +108,10 @@ defualt:
 		'''
 		if len(args) == 0:
 			print("\t".join(Commands.commands))
-			return None
 		if args[0] in Commands.commands:
 			print(f"{args[0]}:\n\t{Commands.commands[args[0]].__doc__}")
-			return None
-		print(f"{args[0]} is not a valid command")
+		else:
+			Log().error("help", f"unable to find help for '{args[0]}'")
 		return None
 
 	def clear(self, args) -> None:
@@ -139,7 +138,7 @@ defualt:
 			else:
 				args = " ".join(args)
 				print(help(args))
-				return None
+			return None
 		except Exception as ex:
 			Log().error("pyin", ex)
 
@@ -181,49 +180,37 @@ subcommands:
 		"""
 		if len(args) == 0:
 			print(style.green(Directory().get_path()))
-			return None
 		elif len(args) == 2 and args[0] == "change":
 			Directory().change_directory(str(args[1]))
-			return None
 		elif len(args) == 1 and args[0] == "list":
 			print("\n".join(Directory().get_direcotries_list()))
-			return None
 		elif len(args) == 1 and args[0] == "stack":
 			print("\n".join(Directory().get_stack_list()))
-			return None
 		elif len(args) == 2 and args[0] == "root":
 			Directory().set_stack_root(str(args[1]))
-			return None
 		elif len(args) == 1 and args[0] == "push":
 			Directory().push_directory()
-			return None
 		elif len(args) == 2 and args[0] == "push":
 			Directory().push_directory(str(args[1]))
-			return None
 		elif len(args) == 1 and args[0] == "pop":
 			Directory().pop_directory()
-			return None
 		elif len(args) == 2 and args[0] == "drop":
 			Directory().drop_directory(int(args[1]))
-			return None
 		elif len(args) == 2 and args[0] == "jump":
 			Directory().jump_directory(int(args[1]))
-			return None
 		elif len(args) == 2 and args[0] == "add":
 			Directory().add_directory(str(args[1]))
-			return None
 		elif len(args) == 3 and args[0] == "add":
 			Directory().add_directory(str(args[1]), str(args[2]))
-			return None
 		elif len(args) == 2 and args[0] == "remove":
 			Directory().remove_directory(str(args[1]))
-			return None
+		return None
 
 	# session
 
 	def session(self, args:list) -> None:
 		if len(args) == 0:
-			return str([item for item in Session().get_session()])
+			print([item for item in Session().get_session()])
 		elif len(args) == 1 and args[0] == "list":
 			for item in Session().list_session():
 				print(str(item))
@@ -236,3 +223,15 @@ subcommands:
 			Session().save_session(str(args[1]))
 		elif len(args) == 2 and args[0] == "load":
 			Session().load_session(str(args[1]))
+		return None
+	
+	def config(self, args:list) -> None:
+		if len(args) == 0:
+			print(Config().config.sections())
+		if len(args) == 1 and args[0] == "list":
+			for item in Config().list():
+				print(item)
+		if len(args) == 2 and args[0] == "list" and args[1] == "full":
+			for item in Config().list_full():
+				print(item)	
+		return None
