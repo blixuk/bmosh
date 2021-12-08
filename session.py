@@ -15,25 +15,7 @@ class Session:
 	def __init__(self) -> None:
 		pass
 
-	def save_session(self, name:str=None) -> None:
-		if not os.path.exists(Session.session_path):
-			os.makedirs(Session.session_path)
-
-		if name is None and Session.session["session"]:
-			name = Session.session["session"]
-		elif name is None and not Session.session["session"]:
-			name = "main"
-
-		with shelve.open(f"{Session.session_path}/{name}.session", 'n') as db:
-			for key in Session.session:
-				try:
-					if not key.startswith("__") or not key.endswith("__"):
-						db[key] = Session.session[key]
-				except TypeError:
-					Log().error(f"session', 'TypeError saving '{key}'")
-			db["session"] = name
-
-	def load_session(self, name:str=None) -> None:
+	def load(self, name:str=None) -> None:
 		if not os.path.exists(Session.session_path):
 			os.makedirs(Session.session_path)
 
@@ -50,6 +32,24 @@ class Session:
 						Session.session[key] = db[key]
 				except TypeError:
 					Log().error(f"session', 'TypeError loading '{key}'")   
+
+	def save(self, name:str=None) -> None:
+		if not os.path.exists(Session.session_path):
+			os.makedirs(Session.session_path)
+
+		if name is None and Session.session["session"]:
+			name = Session.session["session"]
+		elif name is None and not Session.session["session"]:
+			name = "main"
+
+		with shelve.open(f"{Session.session_path}/{name}.session", 'n') as db:
+			for key in Session.session:
+				try:
+					if not key.startswith("__") or not key.endswith("__"):
+						db[key] = Session.session[key]
+				except TypeError:
+					Log().error(f"session', 'TypeError saving '{key}'")
+			db["session"] = name
 
 	def get_session(self) -> list:
 		session:list = []
