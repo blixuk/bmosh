@@ -51,21 +51,21 @@ class Session:
 					Log().error(f"session', 'TypeError saving '{key}'")
 			db["session"] = name
 
-	def get_session(self) -> list:
+	def get(self) -> list:
 		session:list = []
 		for count, (key, value) in enumerate(Session.session.items()):
 			if not key.startswith("__") or not key.endswith("__"):
 				session.append(f"{key}:{value}")
 		return session
 
-	def list_session(self) -> list:
+	def list(self) -> list:
 		session:list = []
 		for count, (key, value) in enumerate(Session.session.items()):
 			if not key.startswith("__") or not key.endswith("__"):
 				session.append(f"[{style.yellow(str(key))}] {style.green(str(value))}")
 		return session
 
-	def list_full_session(self) -> list:
+	def list_full(self) -> list:
 		session:list = []
 		for count, (key, value) in enumerate(Session.session.items()):
 			if not key.startswith("__") or not key.endswith("__"):
