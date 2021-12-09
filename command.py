@@ -1,61 +1,102 @@
 # file: bmo/command.py
 
-from ast import parse
-import sys
-import argparse
+import os
+import importlib
 
-class CustomParser(argparse.ArgumentParser):
-
-	def error(self, message):
-		return message
+import style
+from logging import Log
+from alias import Alias
 
 class Command:
 
-	def __init__(self, description = None, usage = argparse.SUPPRESS):
-		self.description = description
-		self.usage = usage
+	commands = {}
 
-		self.parser = CustomParser(description=self.description, usage=self.usage)
-		self.subparsers = self.parser.add_subparsers(dest="subcommand")
+	def __init__(self) -> None:
+		for name in os.listdir("commands"):
+			path = f"commands/{name}"
+			if os.path.isfile(path):
+				basename = os.path.basename(path)
+				base, extension = os.path.splitext(path)
+				if extension == ".py" and not basename.startswith("_"):
+					Command.commands[name[:-3]] = base.replace("/", ".")
 
-	def argument(self, *name_or_flags, **kwargs):
-		return name_or_flags, kwargs
+	def _call(self, line) -> None:
+			args = line.split(' ')
+			if args[0] in self.commands:
+				return self.commands[args[0]](args[1:])
+			if args[0] in self.aliases:
+				alias = self.aliases[args[0]][0]
+				alias_args = self.aliases[args[0]][1:] + args[1:]
+				return self.commands[alias](alias_args)
+			return line
 
-	def command(self, *parser_args):
-		def decorator(func):
-			for args, kwargs in parser_args:
-				self.parser.add_argument(*args, **kwargs)
-			self.parser.set_defaults(func=func)
-		return decorator
-
-	def subcommand(self, *subparser_args):
-		def decorator(func):
-			parser = self.subparsers.add_parser(func.__name__, description=func.__doc__)
-			for args, kwargs in subparser_args:
-				parser.add_argument(*args, **kwargs)
-			parser.set_defaults(func=func)
-		return decorator
-
-	def parse(self):
-		if len(sys.argv) <= 1:
-			self.parser.print_help()
-		else:
-			args = self.parser.parse_args()
-			args.func(self, args)
-
-	def call(self, line):
-		try:
-			args = self.parser.parse_args(line.split(' '))
-			print(args)
-			if args.subcommand is not None and line.split(' ')[0] in args.subcommand:
-				args.func(self, args)
-				return None
+	def call(self, line:str) -> any:
+		if line == "":
+			return None
+		args = line.split(' ')
+		if Alias().exists(args[0]):
+			alias = Alias().get_alias(args[0]).split(' ')
+			command = importlib.import_module(Command.commands[alias[0]])
+			if len(alias) == 1:
+				return command.run().default()
+			elif len(alias) >= 2:
+				return command.run().subcommands[alias[1]](args[2:])
 			else:
 				return line
-		except argparse.ArgumentTypeError:
-			print('OK')
-		except SystemExit:
-			pass
+		elif args[0] in Command.commands:
+			command = importlib.import_module(Command.commands[args[0]])
+			if args[0] == "help":
+				return command.run().default(args[1:])
+			elif len(args) == 1:
+				return command.run().default([])
+			elif len(args) >= 2:
+				return command.run().subcommands[args[1]](args[2:])
+			else:
+				return line
+		else:
+			#Log().error("command", f"no command named '{args[0]}'")
+			return line
 
-	def print_help(self):
-		self.parser.print_help()
+# 	def alias(self, args:list) -> None:
+# 		"""
+# command aliases\n
+# defualt:
+# 	alias:\t\t\t list all aliases
+# subcommands:
+# 	add <name> <command>:\t add command alias
+# 	remove <name>:\t\t remove command alias
+# 		"""
+# 		if len(args) == 0:
+# 			for alias, command in self.__get_alias():
+# 				print(f"{style.yellow(alias)}\t{style.green(' '.join(command))}")
+# 			return None
+# 		if len(args) >= 2 and args[0] == "add":
+# 			if args[1] not in Commands.aliases:
+# 				Commands.aliases[args[1]] = list(args[2:])
+# 				return None
+# 			else:
+# 				Log().error("alias", f"unable to add alias '{args[1]}'")
+# 		if len(args) == 2 and args[0] == "remove":
+# 			if args[1] in Commands.aliases:
+# 				del Commands.aliases[args[1]]
+# 			else:
+# 				Log().error("alias", f"unable to remove alias '{args[1]}'")
+
+	def alias(self, args:list) -> None:
+		if len(args) == 0:
+			for alias in Alias().list():
+				print(alias)
+		if len(args) == 1 and args[0] == "list":
+			for alias in Alias().list_full():
+				print(alias)
+		if len(args) >= 2 and args[0] == "add":
+			Alias().add(args[1], args[2:])
+		if len(args) >= 2 and args[0] == "remove":
+			Alias().remove(args[1])
+
+	def _pyex(self, args:list) -> any:
+		try:
+			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
+		except SyntaxError: # if syntax error: either can't eval or not python syntax
+			return exec # try exec python statement
+		return eval # eval python expression
