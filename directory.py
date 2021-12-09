@@ -25,7 +25,7 @@ class Directory:
 		'music' : Path('~/Music').expanduser(),
 		'bmo' : Path('~/.config/bmo').expanduser(),
 		'sessions' : Path('~/.config/bmo/sessions').expanduser(),
-		'aliases' : Path('~/.config/bmo/aliases.bmo').expanduser(),
+		'alias' : Path('~/.config/bmo/alias.bmo').expanduser(),
 		'history' : Path('~/.config/bmo/history.bmo').expanduser(),
 		'config' : Path('~/.config/bmo/config.bmo').expanduser(),
 	}
@@ -50,7 +50,7 @@ class Directory:
 		else:
 			return None
 
-	def change_directory(self, path:str) -> None:
+	def change(self, path:str='home') -> None:
 		if path in Directory.directories:
 			os.chdir(Directory.directories[path])
 		elif Path(path).expanduser().is_dir():
@@ -60,20 +60,17 @@ class Directory:
 
 		self.set_path(os.getcwd())
 
-	def set_stack_root(self, path: str) -> None:
+	def set_root(self, path: str) -> None:
 		if Path(path).is_dir():
 			Directory.stack[0] = Path(path)
 			#change(path) # should we change to root path when set?
 		else:
 			Log().error('directory', f"unable to set root path '{path}'")
 
-	def get_stack_list(self) -> list:
-		stack_list = []
-		for count, path in enumerate(Directory.stack):
-			stack_list.append(f"[{style.yellow(str(count))}] {style.green(str(path))}")
-		return stack_list
+	def get_stack(self) -> list:
+		return Directory.stack
 
-	def push_directory(self, path:str=None):
+	def push(self, path:str=None):
 		if path == None:
 			Directory.stack.append(Directory.path)
 		elif path in Directory.directories:
@@ -85,32 +82,29 @@ class Directory:
 		else:
 			Log().error('directory', f"unable to push stack: '{path}'")
 
-	def pop_directory(self) -> None:
+	def pop(self) -> None:
 		if len(Directory.stack) > 1:
 			del Directory.stack[-1]
 			self.change_directory(Directory.stack[-1])
 		else:
 			Log().error('directory', f"unable to pop stack")
 
-	def drop_directory(self, index:int) -> None:
+	def drop(self, index:int) -> None:
 		if int(index) != 0 and len(Directory.stack) > 1:
 			del Directory.stack[int(index)]
 		else:
 			Log().error('directory', f"Unable to drop stack: '{index}'")
 
-	def jump_directory(self, index:int) -> None:
+	def jump(self, index:int) -> None:
 		if int(index) <= (len(Directory.stack) - 1):
 			self.change_directory(Directory.stack[int(index)])
 		else:
 			Log().error('directory', f"unable to jump stack: '{index}'")
 
-	def get_direcotries_list(self) -> list:
-		directories_list = []
-		for key, path in Directory.directories.items():
-			directories_list.append(f'[{style.yellow(str(key))}] {style.green(str(path))}')
-		return directories_list
+	def get_directories(self) -> dict:
+		return Directory.directories.items()
 
-	def add_directory(self, name:str, path:str=None) -> None:
+	def add(self, name:str, path:str=None) -> None:
 		if name not in self.directories and path == None:
 			self.directories[name] = self.path
 		elif name not in self.directories:
@@ -118,7 +112,7 @@ class Directory:
 		else:
 			Log().error('directory', f"Unable to add path '{name}'")
 
-	def remove_directory(self, name:str) -> None:
+	def remove(self, name:str) -> None:
 		if name in Directory.directories:
 			del Directory.directories[name]
 		else:
