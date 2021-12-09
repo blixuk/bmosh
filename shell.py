@@ -1,10 +1,11 @@
 # file: bmo/shell.py
 
 from prompt import Prompt
-from commands import Commands
+from command import Command
 from session import Session
 from logging import Log
 from config import Config
+from alias import Alias
 
 class Shell:
 
@@ -25,14 +26,14 @@ class Shell:
 				break
 
 	def pre_loop(self, count:int, line:str) -> any:
-		line = Commands()._call(line)
+		line = Command().call(line)
 		if line is not None:
 			self.main_loop(count, line)
 		return count, line
 
 	def main_loop(self, count:int, line:str) -> any:
 		try:
-			line = Commands()._pyex(line)(line, Session().session)
+			line = Command()._pyex(line)(line, Session().session)
 		except NameError:
 			Log().error('NameError', line)
 		if line is not None:
@@ -48,6 +49,7 @@ class Shell:
 
 	def on_start(self) -> None:
 		Config().load()
+		Alias().load()
 		Session().load()
 		print('\033[H\033[J')
 
