@@ -28,14 +28,16 @@ class Config:
 		sections:list = []
 		for section in Config.config.sections():
 			sections.append(f"[{style.yellow(section)}]")
+			for option in Config.config.options(section):
+				sections.append(f"{style.green(option)}")
 		return sections
 
 	def list_full(self) -> list:
 		sections:list = []
 		for section in Config.config.sections():
-			sections.append(f"[{style.yellow(section)}]")
-			for option in Config.config.options(section):
-				sections.append(f"\t{style.green(option)}")
+			sections.append(f"[{style.red(section)}]")
+			for option, value in Config.config.items(section):
+				sections.append(f"[{style.yellow(option)}] {style.green(value)}")
 		return sections
 
 	def make_config(self):
