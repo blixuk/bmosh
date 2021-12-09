@@ -18,7 +18,7 @@ class Prompt:
 			count = Config().config.get("prompt", "count_format").replace("@", str(count))
 		else:
 			count = ""
-		return f"{style.green(Directory().get_path())}{self.space()}{self.date_time()}\n{count}{self.carrot} "
+		return f"{style.blue(Directory().get_path())}{self.space()}{self.date_time()}\n{count}{self.carrot} "
 
 	def date_time(self) -> str:
 		return datetime.now().strftime(self.time_date_format)
