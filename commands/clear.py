@@ -7,7 +7,7 @@ defualt:
 	clear:\t\t clear the terminal window
 	'''
 
-	def default(self):
+	def default(self, args:list) -> None:
 		print("\033[H\033[J")
 		return None
 

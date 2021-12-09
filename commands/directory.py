@@ -18,7 +18,7 @@ class Command:
 				Command.subcommands[name] = getattr(self, name)
 		return None
 
-	def default(self):
+	def default(self, args:list) -> None:
 		print(style.green(Directory().get_path()))
 		return None
 

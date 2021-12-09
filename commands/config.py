@@ -17,7 +17,7 @@ class Command:
 				Command.subcommands[name] = getattr(self, name)
 		return None
 
-	def default(self) -> None:
+	def default(self, args:list) -> None:
 		'''
 		print a list of configs
 		'''

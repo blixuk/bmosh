@@ -26,21 +26,21 @@ class Log:
 		return Log.logging
 
 	def warning(self, name:str, message:str) -> None:
-		print(style.warning(f'{name}: {message}'))
+		print(style.warning(f"{name}: {message}"))
 
 	def error(self, name:str, message:str) -> None:
-		print(style.error(f'{name} : {message}'))
+		print(style.error(f"{name} : {message}"))
 
 	def debug(self, name:str, message:str, date_time:bool=False) -> None:
 		if Log.debugging == True:
 			if date_time == True:
-				print(style.information(f'{Log.date_time} {name} : {message}'))
+				print(f"{style.yellow(Log.date_time)} {style.red(name)} : {style.green(message)}")
 			else:
-				print(style.information(f'{Log} : {message}'))
+				print(f"{style.red(name)} : {style.green(message)}")
 	
 	def log(self, name:str, message:str, date_time:bool=True) -> None:
 		if Log.logging == True:
 			if date_time == True:
-				print(style.information(f'{Log.date_time} {name} : {message}'))
+				print(style.information(f"{Log.date_time} {name} : {message}"))
 			else:
-				print(style.information(f'{Log} : {message}'))
+				print(style.information(f"{name} : {message}"))
