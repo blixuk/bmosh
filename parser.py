@@ -34,10 +34,8 @@ class Parser:
 		else:
 			if args[0] in Parser.commands:
 				command = importlib.import_module(Parser.commands[args[0]])
-				if args[0] == "help":
+				if len(args) == 1 or not hasattr(command.run(), 'subcommands'):
 					return command.run().default(args[1:])
-				elif len(args) == 1:
-					return command.run().default([])
 				elif len(args) >= 2:
 					return command.run().subcommands[args[1]](args[2:])
 				else:
