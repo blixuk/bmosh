@@ -2,16 +2,15 @@
 
 from args import Args
 args = Args(description="BMO")
+from config import Config
+Config().load()
 from shell import Shell
-shell = Shell()
 
 class BMO:
 
-	def __init__(self):
-		pass
-
 	@args.subcommand()
 	def run(self, args):
+		shell = Shell()
 		shell.loop()
 
 	@args.subcommand()
