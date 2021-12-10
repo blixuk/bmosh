@@ -3,9 +3,6 @@
 import os
 from pathlib import Path
 
-import style
-from logging import Log
-
 class Directory:
 
 	directories = {
@@ -36,10 +33,8 @@ class Directory:
 		pass
 
 	def set_path(self, path:str) -> None:
-		if Path(path).is_dir():
-			Directory.path = Path(path)
-		else:
-			Log().error('directory', f"unable to set path '{path}'")
+		Directory.path = Path(path)
+		#logging.Log().error('directory', f"unable to set path '{path}'")
 
 	def get_path(self) -> str:
 		return str(Directory.path)
@@ -47,25 +42,19 @@ class Directory:
 	def get_directory(self, name:str) -> str:
 		if name in Directory.directories:
 			return str(Directory.directories[name])
-		else:
-			return None
+		return None
 
 	def change(self, path:str='home') -> None:
 		if path in Directory.directories:
 			os.chdir(Directory.directories[path])
-		elif Path(path).expanduser().is_dir():
-			os.chdir(Path(path).expanduser())
-		else:
-			Log().error('directory', f"unable to change path '{path}'")
-
+		os.chdir(Path(path).expanduser())
+		#logging.Log().error('directory', f"unable to change path '{path}'")
 		self.set_path(os.getcwd())
 
 	def set_root(self, path: str) -> None:
-		if Path(path).is_dir():
-			Directory.stack[0] = Path(path)
-			#change(path) # should we change to root path when set?
-		else:
-			Log().error('directory', f"unable to set root path '{path}'")
+		Directory.stack[0] = Path(path)
+		#change(path) # should we change to root path when set?
+		#logging.Log().error('directory', f"unable to set root path '{path}'")
 
 	def get_stack(self) -> list:
 		return Directory.stack
@@ -76,30 +65,26 @@ class Directory:
 		elif path in Directory.directories:
 			Directory.stack.append(Directory.directories[path])
 			self.change_directory(path)
-		elif Path(path).expanduser().is_dir():
+		else:
 			Directory.stack.append(Path(path).expanduser())
 			self.change_directory(path)
-		else:
-			Log().error('directory', f"unable to push stack: '{path}'")
+		#logging.Log().error('directory', f"unable to push stack: '{path}'")
 
 	def pop(self) -> None:
 		if len(Directory.stack) > 1:
 			del Directory.stack[-1]
 			self.change_directory(Directory.stack[-1])
-		else:
-			Log().error('directory', f"unable to pop stack")
+		#logging.Log().error('directory', f"unable to pop stack")
 
 	def drop(self, index:int) -> None:
 		if int(index) != 0 and len(Directory.stack) > 1:
 			del Directory.stack[int(index)]
-		else:
-			Log().error('directory', f"Unable to drop stack: '{index}'")
+		#logging.Log().error('directory', f"Unable to drop stack: '{index}'")
 
 	def jump(self, index:int) -> None:
 		if int(index) <= (len(Directory.stack) - 1):
 			self.change_directory(Directory.stack[int(index)])
-		else:
-			Log().error('directory', f"unable to jump stack: '{index}'")
+		#logging.Log().error('directory', f"unable to jump stack: '{index}'")
 
 	def get_directories(self) -> dict:
 		return Directory.directories.items()
@@ -109,12 +94,9 @@ class Directory:
 			self.directories[name] = self.path
 		elif name not in self.directories:
 			self.directories[name] = Path(path).expanduser()
-		else:
-			Log().error('directory', f"Unable to add path '{name}'")
+		#logging.Log().error('directory', f"Unable to add path '{name}'")
 
 	def remove(self, name:str) -> None:
 		if name in Directory.directories:
 			del Directory.directories[name]
-		else:
-			Log().error('directory', f"Unable to remove path '{name}'")
-	
+		#logging.Log().error('directory', f"Unable to remove path '{name}'")
