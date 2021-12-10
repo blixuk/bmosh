@@ -43,10 +43,18 @@ class Config:
 	def make_config(self):
 
 		Config.config["prompt"] = {
-			"time_date_format" : "[%d/%m/%Y %H:%M:%S]",
+			"date_time_format" : "[%d/%m/%Y %H:%M:%S]",
+			"date_time" : True,
 			"carrot" : ">",
-			"count" : False,
 			"count_format" : "[@]",
+			"count" : False,
+		}
+
+		Config.config["logging"] = {
+			"time_date_format" : "[%d/%m/%Y %H:%M:%S]",
+			"log" : True,
+			"debug" : False,
+			"history" : True,
 		}
 
 		self.save()
