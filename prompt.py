@@ -3,27 +3,30 @@
 from datetime import datetime
 import os
 
+import style
 from directory import Directory
 from config import Config
-import style
 
 class Prompt:
 
+	date_time_format:str = Config().config.get("prompt", "date_time_format")
+	date_time:bool = Config().config.getboolean("prompt", "date_time")
+	carrot:str = Config().config.get("prompt", "carrot")
+	count_format:str = Config().config.get("prompt", "count_format")
+	count:bool = Config().config.getboolean("prompt", "count")
+
 	def __init__(self) -> None:
-		self.time_date_format = Config().config.get("prompt", "time_date_format")
-		self.carrot = Config().config.get("prompt", "carrot")
+		pass
 
 	def prompt(self, count) -> str:
-		if Config().config.getboolean("prompt", "count") == True:
-			count = Config().config.get("prompt", "count_format").replace("@", str(count))
-		else:
-			count = ""
-		return f"{style.blue(Directory().get_path())}{self.space()}{self.date_time()}\n{count}{self.carrot} "
+		count = Prompt.count_format.replace("@", count) if Prompt.count else ""
+		date_time = self.get_date_time() if Prompt.date_time else ""
+		return f"{style.blue(Directory().get_path())}{self.space()}{date_time}\n{count}{Prompt.carrot} "
 
-	def date_time(self) -> str:
-		return datetime.now().strftime(self.time_date_format)
+	def get_date_time(self) -> str:
+		return datetime.now().strftime(Prompt.date_time_format)
 
 	def space(self) -> str:
 		columns, rows = os.get_terminal_size()
-		space_size = (columns - (len(self.date_time()) + len(Directory().get_path())))
+		space_size = (columns - (len(self.get_date_time()) + len(Directory().get_path())))
 		return str(' ' * space_size)
