@@ -29,7 +29,7 @@ defualt:
 	def default(self, args:list=[]) -> None:
 		if len(args) == 1 and args[0] in Command.commands:
 			command = importlib.import_module(f"commands.{args[0]}")
-			print(f"{args[0]}:\n\t{command.run().__doc__}")
+			command.run().help([])
 		elif len(args) == 0:
 			print("    ".join(Command.commands))
 		else:
