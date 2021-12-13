@@ -6,10 +6,7 @@ import style
 from directory import Directory
 
 class Command:
-	'''
-	directory
-	'''
-
+	
 	subcommands = {}
 
 	def __init__(self) -> None:
@@ -23,9 +20,6 @@ class Command:
 		return None
 
 	def change(self, args:list) -> None:
-		'''
-		directory change
-		'''
 		if len(args) == 1:
 			Directory().change(str(args[0]))
 		else:
@@ -33,9 +27,6 @@ class Command:
 		return None
 
 	def list(self, args:list) -> None:
-		'''
-		directory list
-		'''
 		for name, path in Directory().get_directories():
 			print(f'[{style.yellow(str(name))}] {style.green(str(path))}')
 		return None
