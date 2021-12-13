@@ -2,12 +2,10 @@
 
 import types
 
+import style
 from config import Config
 
 class Command:
-	'''
-	config
-	'''
 
 	subcommands = {}
 
@@ -18,17 +16,23 @@ class Command:
 		return None
 
 	def default(self, args:list) -> None:
-		'''
-		print a list of configs
-		'''
-		print([item for item in Config().list()])
+		print("\n".join([item for item in Config().list()]))
 		return None
 
 	def list(self, args:list) -> None:
-		'''
-		print a list of configs and their values
-		'''
-		print([item for item in Config().list_full()])
+		print("\n".join([item for item in Config().list_full()]))
+		return None
+
+	def help(self, args:list) -> None:
+		help = {
+			"name": "config",
+			"description": "manage configs",
+			"default": {"config" : "prints a list of configs"},
+			"subcommands": {
+				"list" : "print a list of configs and their values",
+			}
+		}
+		print(style.help(help))
 		return None
 
 def run() -> Command:
