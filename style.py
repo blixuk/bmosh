@@ -162,3 +162,35 @@ def progressBarStyled(iterable, prefix='', suffix='', decimals=1, length=100, fi
 		printProgressBar(i + 1)
 
 	print()
+
+def command(commands:str, description:str="") -> style:
+	command = []
+	commands = commands.split(" ")
+	command.append(style(commands[0], bold=True, fgBlue=True))
+	for word in commands[1:]:
+		if word.startswith("<") and word.endswith(">"):
+			word = word.lstrip("<").rstrip(">")
+			word = f"<{style(word, fgYellow=True)}>"
+		else:
+			word = style(word, bold=True, fgGreen=True)
+		command.append(word)
+	
+	return f"{' '.join(command)} : {description}"
+
+def help(help:dict) -> str:
+	command_help = []
+	for key, value in help.items():
+		if key == "name":
+			command_help.append(style(f"{value}:", bold=True, fgWhite=True))
+		elif key == "description":
+			command_help.append(f"    {value}")
+		elif key == "default":
+			command_help.append(style("default:", bold=True))
+			for name, description in value.items():
+				command_help.append(f"    {command(name, description)}")
+		elif key == "subcommands":
+			command_help.append(style("subcommands:", bold=True))
+			for name, description in value.items():
+				name = f"{help['name']} {name}"
+				command_help.append(f"    {command(name, description)}")
+	return "\n".join(command_help)
