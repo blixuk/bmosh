@@ -83,5 +83,26 @@ class Command:
 			Directory().remove(str(args[0]))
 		return None
 
+	def help(self, args:list) -> None:
+		help = {
+			"name": "directory",
+			"description": "a command for managing and navigating directories",
+			"default": {"directory" : "prints the current directory"},
+			"subcommands": {
+				"change <op:path>" : "changes directory to the specified path or home directory",
+				"list" : "list all saved directories",
+				"stack" : "list all directories in the stack",
+				"root <path>" : "set the root directory of the stack",
+				"push <op:path" : "push specified directory onto the stack or current directory",
+				"pop" : "pop the top directory from the stack",
+				"drop <index>" : "drop the directory at the specified index from the stack",
+				"jump <index>" : "change directory to the specified index in the stack",
+				"add <name> <op:path>" : "add directory to saved directories or current directory",
+				"remove <name>" : "remove specified directory from saved directories",
+			}
+		}
+		print(style.help(help))
+		return None
+
 def run() -> Command:
 	return Command()
