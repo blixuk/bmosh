@@ -1,18 +1,13 @@
 # file: bmo/commands/help.py
 
 import importlib
-import types
 import os
+
+import style
 
 from logging import Log
 
 class Command:
-	'''
-show help messages for commands\n
-defualt:
-	help:\t\t show a list of commands
-	help <name>:\t show help for command
-	'''
 
 	commands = {}
 
@@ -34,6 +29,15 @@ defualt:
 			print("    ".join(Command.commands))
 		else:
 			Log().error("help", f"unable to find help for '{args[0]}'")
+		return None
+
+	def help(self, args:list) -> None:
+		help = {
+			"name": "help",
+			"description": "show help messages for commands",
+			"default": {"help <op:name>" : "show a list of commands or help for a specified command"},
+		}
+		print(style.help(help))
 		return None
 
 def run() -> Command:
