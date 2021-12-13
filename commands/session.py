@@ -2,12 +2,10 @@
 
 import types
 
+import style
 from session import Session
 
 class Command:
-	'''
-	session
-	'''
 
 	subcommands = {}
 
@@ -18,19 +16,10 @@ class Command:
 		return None
 
 	def default(self, args:list) -> None:
-		'''
-		print the current session
-		'''
 		print([item for item in Session().get()])
 		return None
 
 	def list(self, args:list) -> None:
-		'''
-		print a list of the current session
-			session list
-		print a full list of the current session
-			session list full
-		'''
 		if len(args) == 1 and args[0] == 'full':
 			for item in Session().list_full():
 				print(item)
@@ -40,12 +29,6 @@ class Command:
 		return None
 
 	def save(self, args:list) -> None:
-		'''
-		save the current session
-			session save
-		save a custom session
-			session save <name>
-		'''
 		if len(args) == 1:
 			Session().save(str(args[0]))
 		else:
@@ -53,18 +36,26 @@ class Command:
 		return None
 	
 	def load(self, args:list) -> None:
-		'''
-		load the defualt session
-			session load
-		load a custom session
-			session load <name>
-		'''
 		if len(args) == 1:
 			Session().save(str(args[0]))
 		else:
 			Session().save()
 		return None
 
+	def help(self, args:list) -> None:
+		help = {
+			"name": "session",
+			"description": "session manager",
+			"default": {"session" : "print the current session"},
+			"subcommands": {
+				"list" : "print a list of the current session",
+				"list full" : "print a full list of the current session",
+				"save <op:name>" : "save the current session or a custom session",
+				"load <op:name>" : "load the default session or load a custom session"
+			}
+		}
+		print(style.help(help))
+		return None
 
 def run() -> Command:
 	return Command()
