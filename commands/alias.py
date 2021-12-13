@@ -6,9 +6,6 @@ import style
 from alias import Alias
 
 class Command:
-	'''
-	alias
-	'''
 
 	subcommands = {}
 
@@ -20,8 +17,7 @@ class Command:
 	
 	def default(self, args:list=[]) -> None:
 		if len(args) == 0:
-			for alias in Alias().list():
-				print(f"{style.green(alias)}")
+			print("\n".join([f"{style.green(alias)}" for alias in Alias().list()]))
 		return None
 
 	def load(self, args:list) -> None:
@@ -34,11 +30,7 @@ class Command:
 
 	def list(self, args:list) -> None:
 		if len(args) == 0:
-			for alias in Alias().list():
-				print(f"{style.green(alias)}")
-		elif len(args) == 1 and args[0] == "full":
-			for alias, value in Alias().list_full():
-				print(f"[{style.yellow(alias)}] {style.green(value)}")
+			print("\n".join([f"{style.green(alias)} -> {style.yellow(value)}" for alias, value in Alias().list_full()]))
 		return None
 
 	def add(self, args:list) -> None:
@@ -48,6 +40,20 @@ class Command:
 	def remove(self, args:list) -> None:
 		if len(args) == 1:
 			Alias().remove(args[0])
+
+	def help(self, args:list) -> None:
+		help = {
+			"name": "alias",
+			"description": "alias manager",
+			"default": {"alias" : "prints a list of all aliases"},
+			"subcommands": {
+				"list" : "prints a full list of all aliases",
+				"add <name> <commands>" : "add an alias",
+				"remove <name>" : "remove an alias",
+			}
+		}
+		print(style.help(help))
+		return None
 
 def run() -> Command:
 	return Command()
