@@ -2,10 +2,9 @@
 
 import types
 
+import style
+
 class Command:
-	'''
-	test command
-	'''
 
 	subcommands = {}
 
@@ -25,6 +24,19 @@ class Command:
 
 	def hello(self, args:list) -> None:
 		print(args)
+		return None
+
+	def help(self, args:list) -> None:
+		help = {
+			"name": "test",
+			"description": "a test command to test the commands",
+			"default": {"test" : "prints default"},
+			"subcommands": {
+				"test" : "prints test",
+				"hello <op:args>" : "prints args",
+			}
+		}
+		print(style.help(help))
 		return None
 
 def run() -> Command:
