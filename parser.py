@@ -37,7 +37,10 @@ class Parser:
 				if len(args) == 1 or not hasattr(command.run(), 'subcommands'):
 					return command.run().default(args[1:])
 				elif len(args) >= 2:
-					return command.run().subcommands[args[1]](args[2:])
+					try:
+						return command.run().subcommands[args[1]](args[2:])
+					except KeyError:
+						return command.run().help([])
 				else:
 					return line
 			else:
