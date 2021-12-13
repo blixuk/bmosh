@@ -60,14 +60,14 @@ class Session:
 
 	def list(self) -> list:
 		session:list = []
-		for count, (key, value) in enumerate(Session.session.items()):
+		for key, value in Session.session.items():
 			if not key.startswith("__") or not key.endswith("__"):
-				session.append(f"[{style.yellow(str(key))}] {style.green(str(value))}")
+				session.append(f"{style.green(str(key))} -> {style.yellow(str(value))}")
 		return session
 
 	def list_full(self) -> list:
 		session:list = []
-		for count, (key, value) in enumerate(Session.session.items()):
+		for key, value in Session.session.items():
 			if not key.startswith("__") or not key.endswith("__"):
-				session.append(f"[{style.yellow(str(count))}] [{style.yellow(str(key))}:{style.blue(str(value.__class__.__name__))}:{style.green(str(value))}]")
+				session.append(f"{style.green(str(key))} -> {style.yellow(str(value))}:{style.red(str(value.__class__.__name__))}")
 		return session
