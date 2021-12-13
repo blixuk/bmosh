@@ -16,16 +16,11 @@ class Command:
 		return None
 
 	def default(self, args:list) -> None:
-		print([item for item in Session().get()])
+		print("\n".join([item for item in Session().list()]))
 		return None
 
 	def list(self, args:list) -> None:
-		if len(args) == 1 and args[0] == 'full':
-			for item in Session().list_full():
-				print(item)
-		else:
-			for item in Session().list():
-				print(item)
+		print("\n".join([item for item in Session().list_full()]))
 		return None
 
 	def save(self, args:list) -> None:
