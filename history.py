@@ -36,11 +36,12 @@ class History:
 	def make_history(self) -> None:
 		if not os.path.isfile(History.history_path):
 			with open(History.history_path, 'w') as f:
-					f.write(f"[created]{History.date_time}")
+				f.write("")
+				#f.write(f"[created]{History.date_time}")
 		return None
 
 	def save(self) -> None:
-		History.history.append(f"[closed]{History.date_time}")
+		#History.history.append(f"[closed]{History.date_time}")
 		with open(History.history_path, 'w') as f:
 			for line in History.history:
 				f.write(f"{line}\n")
@@ -53,5 +54,5 @@ class History:
 			for line in f:
 				if line not in ["", " ", "\t", "\n"]:
 					History.history.append(line.strip())
-		History.history.append(f"[opened]{History.date_time}")
+		#History.history.append(f"[opened]{History.date_time}")
 		return None
