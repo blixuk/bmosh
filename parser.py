@@ -1,4 +1,4 @@
-# file: bmo/command.py
+# file: bmo/parser.py
 
 import os
 import importlib
@@ -11,10 +11,12 @@ class Parser:
 
 	commands = {}
 	aliases = {}
+	completion = []
 
 	def __init__(self) -> None:
 		self.get_commands()
 		self.get_aliases()
+		self.get_completion()
 
 	def parse(self, line:str) -> any:
 		if line == "":
@@ -63,9 +65,19 @@ class Parser:
 		for alias, value in Alias().list_full():
 			Parser.aliases[alias] = value
 
+	def get_completion(self) -> None:
+		for command in Parser.commands:
+			Parser.completion.append(command)
+		for alias in Parser.aliases:
+			Parser.completion.append(alias)
+
 	def py_exec(self, args:list) -> any:
 		try:
 			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
 		except SyntaxError: # if syntax error: either can't eval or not python syntax
 			return exec # try exec python statement
 		return eval # eval python expression
+
+	def completer(self, text:str, state:int) -> str:
+		result = [x for x in Parser.completion if x.startswith(text)] + [None]
+		return result[state]
