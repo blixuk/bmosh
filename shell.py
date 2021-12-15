@@ -1,8 +1,7 @@
 # file: bmo/shell.py
 
-from os import dup
 import sys
-from typing import final
+import readline
 
 import style
 from config import Config
@@ -11,6 +10,7 @@ from parser import Parser
 from session import Session
 from alias import Alias
 from history import History
+from directory import Directory
 from logging import Log
 
 debug = Log().debug
@@ -28,6 +28,8 @@ class Shell:
 				line = input(Prompt().prompt(count))
 				debug("loop", str(line))
 				self.pre_loop(count, line)
+			except Exception as e:
+				print(e)
 			except KeyboardInterrupt:
 				debug("KeyboardInterrupt", "exit clean!")
 				self.exit_handler("KeyboardInterrupt")
@@ -66,6 +68,7 @@ class Shell:
 		Alias().load()
 		History().load()
 		Session().load()
+		self.line_handler()
 		print('\033[H\033[J')
 
 	def on_exit(self, message:str="") -> None:
@@ -80,3 +83,8 @@ class Shell:
 		responce = input(style.red("Do you want to exit? [y/n] "))
 		if responce in ["y", "Y", "yes", "Yes", "YES"]:
 			self.on_exit(message)
+
+	def line_handler(self, state=True) -> None:
+		readline.parse_and_bind("tab: complete")
+		readline.set_completer(Parser().completer)
+		readline.read_history_file(Directory().get_directory('history'))
