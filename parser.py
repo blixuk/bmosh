@@ -2,6 +2,7 @@
 
 import os
 import importlib
+import readline
 
 from logging import Log
 from alias import Alias
@@ -11,7 +12,7 @@ class Parser:
 
 	commands = {}
 	aliases = {}
-	completion = []
+	completion = {}
 
 	def __init__(self) -> None:
 		self.get_commands()
@@ -22,7 +23,7 @@ class Parser:
 		if line == "":
 			return None
 
-		args = line.split(' ')
+		args = line.strip().split(' ')
 
 		if args[0] in Parser.aliases:
 			alias = Parser.aliases[args[0]].split(' ')
@@ -52,6 +53,13 @@ class Parser:
 					return line
 					Log().error('NameError', line)
 
+	def py_exec(self, args:list) -> any:
+		try:
+			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
+		except SyntaxError: # if syntax error: either can't eval or not python syntax
+			return exec # try exec python statement
+		return eval # eval python expression
+
 	def get_commands(self) -> None:
 		for name in os.listdir("commands"):
 			path = f"commands/{name}"
@@ -66,18 +74,30 @@ class Parser:
 			Parser.aliases[alias] = value
 
 	def get_completion(self) -> None:
-		for command in Parser.commands:
-			Parser.completion.append(command)
-		for alias in Parser.aliases:
-			Parser.completion.append(alias)
+		for name in Parser.commands:
+			if name in Parser.commands:
+				Parser.completion[name] = []
+				command = importlib.import_module(Parser.commands[name])
+				if hasattr(command.run(), 'subcommands'):
+					for subcommand in command.run().subcommands:
+						subcommands = Parser.completion[name]
+						if subcommand != "default":
+							subcommands.append(subcommand)
+						Parser.completion[name] = subcommands
 
-	def py_exec(self, args:list) -> any:
-		try:
-			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
-		except SyntaxError: # if syntax error: either can't eval or not python syntax
-			return exec # try exec python statement
-		return eval # eval python expression
-
-	def completer(self, text:str, state:int) -> str:
+	def basic_completer(self, text:str, state:int) -> str:
 		result = [x for x in Parser.completion if x.startswith(text)] + [None]
 		return result[state]
+
+	def advanced_completer(self, text:str, state:int) -> str:
+		try:
+			tokens = readline.get_line_buffer().split(" ")
+			if tokens == []:
+				results = []
+			elif len(tokens) == 1:
+				results = [x+" " for x in Parser.completion if x.startswith(tokens[0])] + [None]
+			else:
+				results = [x+" " for x in Parser.completion[tokens[0]] if x.startswith(tokens[1])] + [None]
+			return results[state]
+		except Exception as e:
+			print('ERROR:', e)
