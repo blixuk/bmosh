@@ -23,9 +23,6 @@ class Shell:
 
 	def loop(self) -> None:
 		self.on_start()
-
-		print(Parser.completion)
-
 		for count, _ in enumerate(iter(bool, True)):
 			try:
 				line = input(Prompt().prompt(count))
