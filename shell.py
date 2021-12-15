@@ -23,6 +23,9 @@ class Shell:
 
 	def loop(self) -> None:
 		self.on_start()
+
+		print(Parser.completion)
+
 		for count, _ in enumerate(iter(bool, True)):
 			try:
 				line = input(Prompt().prompt(count))
@@ -86,5 +89,6 @@ class Shell:
 
 	def line_handler(self, state=True) -> None:
 		readline.parse_and_bind("tab: complete")
-		readline.set_completer(Parser().completer)
+		readline.set_completer(Parser().advanced_completer)
+		readline.set_history_length(1000)
 		readline.read_history_file(Directory().get_directory('history'))
