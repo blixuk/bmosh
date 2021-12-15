@@ -35,7 +35,7 @@ class Alias:
 
 		Alias.parser["aliases"] = {
 			"c" : "clear",
-			"al" : "alias",
+			"al" : "alias list",
 			"aa" : "alias add",
 			"ar" : "alias remove",
 			"dc" : "directory change",
