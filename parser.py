@@ -26,34 +26,33 @@ class Parser:
 		args = line.strip().split(' ')
 
 		if args[0] in Parser.aliases:
-			alias = Parser.aliases[args[0]].split(' ')
-			command = importlib.import_module(Parser.commands[alias[0]])
-			if len(alias) == 1:
-				return command.run().default()
-			elif len(alias) >= 2:
-				return command.run().subcommands[alias[1]](args[2:])
-			else:
-				return line
-		else:
-			if args[0] in Parser.commands:
-				command = importlib.import_module(Parser.commands[args[0]])
-				if len(args) == 1 or not hasattr(command.run(), 'subcommands'):
-					return command.run().default(args[1:])
-				elif len(args) >= 2:
-					try:
-						return command.run().subcommands[args[1]](args[2:])
-					except KeyError:
-						return command.run().help([])
-				else:
-					return line
-			else:
-				try:
-					return self.py_exec(line)(line, Session().session)
-				except NameError:
-					return line
-					Log().error('NameError', line)
+			args = self.resolve_alias(args)
 
-	def py_exec(self, args:list) -> any:
+		if args[0] in Parser.commands:
+			return self.run_command(args)
+		else:
+			try:
+				return self.run_python(line)(line, Session().session)
+			except NameError:
+				Log().error('NameError', line)
+				return line
+
+	def run_command(self, args:list) -> any:
+		command = importlib.import_module(Parser.commands[args[0]])
+		if len(args) == 1 or not hasattr(command.run(), 'subcommands'):
+			return command.run().default(args[1:])
+		elif len(args) >= 2:
+			try:
+				return command.run().subcommands[args[1]](args[2:])
+			except KeyError:
+				return command.run().help([])
+		else:
+			return args
+
+	def resolve_alias(self, args:list) -> list:
+		return Parser.aliases[args[0]].split(' ') + args[1:]
+
+	def run_python(self, args:list) -> any:
 		try:
 			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
 		except SyntaxError: # if syntax error: either can't eval or not python syntax
