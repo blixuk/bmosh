@@ -28,8 +28,6 @@ class Shell:
 				line = input(Prompt().prompt(count))
 				debug("loop", str(line))
 				self.pre_loop(count, line)
-			except Exception as e:
-				print(e)
 			except KeyboardInterrupt:
 				debug("KeyboardInterrupt", "exit clean!")
 				self.exit_handler("KeyboardInterrupt")
