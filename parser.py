@@ -8,6 +8,9 @@ from logging import Log
 from alias import Alias
 from session import Session
 
+debug = Log().debug
+error = Log().error
+
 class Parser:
 
 	commands = {}
@@ -19,37 +22,60 @@ class Parser:
 		self.get_aliases()
 		self.get_completion()
 
-	def parse(self, line:str) -> any:
-		if line == "":
+	def parse(self, args:list) -> any:
+		debug("parse : input", str(args))
+		if args == []:
+			return None # or [] ?
+
+		if "|" in args:
+			#error("parse", "Piping is not supported yet")
+			debug("parse : pipe : input", str(args))
+			pipeline = self.make_pipeline(args)
+			debug("parse : pipe : pipepline", str(pipeline))
+			output = []
+			debug("parse : pipe : output", str(output))
+			for pipe in pipeline:
+				debug("parse : pipe : pipe", str(pipe))
+				output = self.parse(pipe.split() + output)
+				debug("parse : pipe : output", str(output))
 			return None
 
-		args = line.strip().split(' ')
+		#args = line.strip().split(' ')
+		#debug("parse : split", str(args))
 
 		if args[0] in Parser.aliases:
-			args = self.resolve_alias(args)
+			args = self.get_alias(args)
+			debug("parse : alias", str(args))
 
 		if args[0] in Parser.commands:
+			debug("parse : command", str(args))
 			return self.run_command(args)
 		else:
 			try:
+				debug("parse : python", str(args))
 				return self.run_python(line)(line, Session().session)
 			except NameError:
-				Log().error('NameError', line)
+				error('NameError', line)
 				return line
 
 	def run_command(self, args:list) -> any:
 		command = importlib.import_module(Parser.commands[args[0]])
+		debug("parse : command : command", str(command))
+		debug("parse : command : subcommands", str(hasattr(command.run(), 'subcommands')))
 		if len(args) == 1 or not hasattr(command.run(), 'subcommands'):
+			debug("parse : command : 1", str(args))
 			return command.run().default(args[1:])
-		elif len(args) >= 2:
+		elif len(args) >= 2 and hasattr(command.run(), 'subcommands'):
 			try:
+				debug("parse : command : 2", str(args))
 				return command.run().subcommands[args[1]](args[2:])
-			except KeyError:
+			except KeyError as e:
+				debug("parse : command : KeyError", str(e))
 				return command.run().help([])
 		else:
 			return args
 
-	def resolve_alias(self, args:list) -> list:
+	def get_alias(self, args:list) -> list:
 		return Parser.aliases[args[0]].split(' ') + args[1:]
 
 	def run_python(self, args:list) -> any:
@@ -58,6 +84,12 @@ class Parser:
 		except SyntaxError: # if syntax error: either can't eval or not python syntax
 			return exec # try exec python statement
 		return eval # eval python expression
+
+	def make_pipeline(self, args:list) -> list:
+		string = " ".join(args)
+		pipeline = [pipe.strip() for pipe in string.split("|")]
+		debug("parse : pipeline : string", str(pipeline))
+		return pipeline
 
 	def get_commands(self) -> None:
 		for name in os.listdir("commands"):
