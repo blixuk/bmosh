@@ -25,7 +25,7 @@ class Shell:
 		self.on_start()
 		for count, _ in enumerate(iter(bool, True)):
 			try:
-				line = input(Prompt().prompt(count))
+				line = input(Prompt().prompt(count)).split(' ')
 				debug("loop", str(line))
 				self.pre_loop(count, line)
 			except KeyboardInterrupt:
@@ -37,15 +37,15 @@ class Shell:
 				debug("SystemExit", "exit clean!")
 				self.on_exit("SystemExit")
 
-	def pre_loop(self, count:int, line:str) -> any:
+	def pre_loop(self, count:int, line:list) -> any:
 		debug("pre_Loop_in", str(line))
-		History().add(line)
+		#History().add(line)
 		line = Parser().parse(line)
 		if line is not None:
 			self.main_loop(count, line)
 		debug("pre_Loop_out", str(line))
 
-	def main_loop(self, count:int, line:str) -> any:
+	def main_loop(self, count:int, line:list) -> any:
 		debug("main_Loop_in", str(line))
 		if line is not None:
 			self.post_loop(count, line)
@@ -53,7 +53,7 @@ class Shell:
 			log("main_Loop", str(line))
 		debug("main_Loop_out", str(line))
 
-	def post_loop(self, count:int, line:str) -> any:
+	def post_loop(self, count:int, line:list) -> any:
 		debug("post_Loop_in", str(line))
 		if line is not None:
 			print(line)
