@@ -26,6 +26,9 @@ class Command:
 		print(args)
 		return None
 
+	def pipe(self, args:list) -> None:
+		return args
+
 	def help(self, args:list) -> None:
 		help = {
 			"name": "test",
@@ -34,6 +37,7 @@ class Command:
 			"subcommands": {
 				"test" : "prints test",
 				"hello <op:args>" : "prints args",
+				"pipe <op:args>" : "returns args",
 			}
 		}
 		print(style.help(help))
