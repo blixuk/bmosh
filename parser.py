@@ -3,6 +3,7 @@
 import os
 import importlib
 import readline
+from shlex import split
 
 from logging import Log
 from alias import Alias
@@ -23,25 +24,24 @@ class Parser:
 		self.get_completion()
 
 	def parse(self, args:list) -> any:
-		debug("parse : input", str(args))
+		if type(args) == str:
+			line = args
+			args = split(args)
+
+		debug("parse : args", str(args))
 		if args == []:
 			return None # or [] ?
 
 		if "|" in args:
-			#error("parse", "Piping is not supported yet")
-			debug("parse : pipe : input", str(args))
 			pipeline = self.make_pipeline(args)
 			debug("parse : pipe : pipepline", str(pipeline))
 			output = []
 			debug("parse : pipe : output", str(output))
 			for pipe in pipeline:
 				debug("parse : pipe : pipe", str(pipe))
-				output = self.parse(pipe.split() + output)
+				output = self.parse(pipe + output)
 				debug("parse : pipe : output", str(output))
 			return None
-
-		#args = line.strip().split(' ')
-		#debug("parse : split", str(args))
 
 		if args[0] in Parser.aliases:
 			args = self.get_alias(args)
@@ -52,7 +52,7 @@ class Parser:
 			return self.run_command(args)
 		else:
 			try:
-				debug("parse : python", str(args))
+				debug("parse : python", str(line))
 				return self.run_python(line)(line, Session().session)
 			except NameError:
 				error('NameError', line)
@@ -78,16 +78,26 @@ class Parser:
 	def get_alias(self, args:list) -> list:
 		return Parser.aliases[args[0]].split(' ') + args[1:]
 
-	def run_python(self, args:list) -> any:
+	def run_python(self, line:str) -> any:
 		try:
-			compile(" ".join(args), '<stdin>', 'eval') # compile python with eval
+			debug("parse : python : compile", str(line))
+			compile(line, '<stdin>', 'eval') # compile python with eval
 		except SyntaxError: # if syntax error: either can't eval or not python syntax
+			debug("parse : python : exec", str(line))
 			return exec # try exec python statement
+		debug("parse : python : eval", str(line))
 		return eval # eval python expression
 
 	def make_pipeline(self, args:list) -> list:
-		string = " ".join(args)
-		pipeline = [pipe.strip() for pipe in string.split("|")]
+		pipeline = []
+		pipe = []
+		for arg in args:
+			if arg != "|":
+				pipe.append(arg)
+			else:
+				pipeline.append(pipe)
+				pipe = []
+		pipeline.append(pipe)
 		debug("parse : pipeline : string", str(pipeline))
 		return pipeline
 
