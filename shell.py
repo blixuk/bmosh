@@ -25,7 +25,7 @@ class Shell:
 		self.on_start()
 		for count, _ in enumerate(iter(bool, True)):
 			try:
-				line = input(Prompt().prompt(count)).split(' ')
+				line = input(Prompt().prompt(count))
 				debug("loop", str(line))
 				self.pre_loop(count, line)
 			except KeyboardInterrupt:
