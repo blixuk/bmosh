@@ -10,7 +10,7 @@ class Command:
 		pass
 
 	def default(self, args:list) -> None:
-		print(f"I got this: {args}")
+		print("\n".join(args))
 		return None
 
 	def help(self, args:list) -> None:
