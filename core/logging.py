@@ -2,9 +2,9 @@
 
 from datetime import date, datetime
 
-import style
-from config import Config
-from history import History
+import lib.style as style
+from core.config import Config
+from core.history import History
 
 class Log:
 

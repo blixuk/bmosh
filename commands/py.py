@@ -2,7 +2,7 @@
 
 import types
 
-from session import Session
+from core.session import Session
 
 class Command:
 	'''

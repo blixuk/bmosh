@@ -3,9 +3,9 @@
 import shelve
 import os
 
-import style
-from logging import Log
-from directory import Directory
+import lib.style as style
+from core.logging import Log
+from core.directory import Directory
 
 class Session:
 

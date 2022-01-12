@@ -2,8 +2,8 @@
 
 import types
 
-import style
-from session import Session
+import lib.style as style
+from core.session import Session
 
 class Command:
 

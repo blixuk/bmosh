@@ -3,9 +3,9 @@
 import importlib
 import os
 
-import style
+import lib.style as style
 
-from logging import Log
+from core.logging import Log
 
 class Command:
 

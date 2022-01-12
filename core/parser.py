@@ -5,9 +5,9 @@ import importlib
 import readline
 from shlex import split
 
-from logging import Log
-from alias import Alias
-from session import Session
+from core.logging import Log
+from core.alias import Alias
+from core.session import Session
 
 debug = Log().debug
 error = Log().error

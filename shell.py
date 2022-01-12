@@ -3,15 +3,15 @@
 import sys
 import readline
 
-import style
-from config import Config
-from prompt import Prompt
-from parser import Parser
-from session import Session
-from alias import Alias
-from history import History
-from directory import Directory
-from logging import Log
+import lib.style as style
+from core.config import Config
+from core.prompt import Prompt
+from core.parser import Parser
+from core.session import Session
+from core.alias import Alias
+from core.history import History
+from core.directory import Directory
+from core.logging import Log
 
 debug = Log().debug
 log = Log().log

@@ -3,7 +3,7 @@
 import os
 from datetime import datetime
 
-from directory import Directory
+from core.directory import Directory
 
 class History:
 

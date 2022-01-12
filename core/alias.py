@@ -3,9 +3,9 @@
 import os
 from configparser import RawConfigParser
 
-import style
-from directory import Directory
-from logging import Log
+import lib.style as style
+from core.directory import Directory
+from core.logging import Log
 
 class Alias:
 

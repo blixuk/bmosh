@@ -2,8 +2,8 @@
 
 import types
 
-import style
-from alias import Alias
+import lib.style as style
+from core.alias import Alias
 
 class Command:
 

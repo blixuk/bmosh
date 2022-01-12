@@ -3,9 +3,9 @@
 from datetime import datetime
 import os
 
-import style
-from directory import Directory
-from config import Config
+import lib.style as style
+from core.directory import Directory
+from core.config import Config
 
 class Prompt:
 

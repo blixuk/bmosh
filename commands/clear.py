@@ -1,6 +1,6 @@
 # file: bmo/commands/clear.py
 
-import style
+import lib.style as style
 
 class Comamnd:
 

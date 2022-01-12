@@ -2,7 +2,7 @@
 
 from args import Args
 args = Args(description="BMO")
-from config import Config
+from core.config import Config
 Config().load()
 from shell import Shell
 

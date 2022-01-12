@@ -2,8 +2,8 @@
 
 import types
 
-import style
-from config import Config
+import lib.style as style
+from core.config import Config
 
 class Command:
 

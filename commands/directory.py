@@ -2,8 +2,8 @@
 
 import types
 
-import style
-from directory import Directory
+import lib.style as style
+from core.directory import Directory
 
 class Command:
 	

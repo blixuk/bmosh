@@ -2,7 +2,7 @@
 
 import types
 
-import style
+import lib.style as style
 
 class Command:
 
